@@ -382,6 +382,59 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+                /* ===== Name Animation: Decrypt + Glitch (added) ===== */
+        .hero h1.glitch {
+            position: relative;
+            filter: drop-shadow(0 0 14px rgba(0, 255, 204, 0.28));
+        }
+
+        .hero h1.glitch::before,
+        .hero h1.glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            pointer-events: none;
+            background: none;
+            mix-blend-mode: screen;
+        }
+
+        .hero h1.glitch::before {
+            color: #ff2e63;
+            -webkit-text-fill-color: #ff2e63;
+        }
+
+        .hero h1.glitch::after {
+            color: #08f7fe;
+            -webkit-text-fill-color: #08f7fe;
+        }
+
+        .hero h1.glitch.is-glitching::before {
+            opacity: 0.85;
+            animation: nameGlitchA 0.35s steps(2, end);
+        }
+
+        .hero h1.glitch.is-glitching::after {
+            opacity: 0.85;
+            animation: nameGlitchB 0.35s steps(2, end);
+        }
+
+        @keyframes nameGlitchA {
+            0%   { transform: translate(-4px, 1px); clip-path: inset(10% 0 60% 0); }
+            50%  { transform: translate(4px, -2px); clip-path: inset(55% 0 10% 0); }
+            100% { transform: translate(-2px, 0);   clip-path: inset(30% 0 40% 0); }
+        }
+
+        @keyframes nameGlitchB {
+            0%   { transform: translate(4px, -1px); clip-path: inset(60% 0 10% 0); }
+            50%  { transform: translate(-4px, 2px); clip-path: inset(15% 0 55% 0); }
+            100% { transform: translate(2px, 0);    clip-path: inset(45% 0 25% 0); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .hero h1.glitch::before,
+            .hero h1.glitch::after { display: none; }
+        }
     </style>
 </head>
 <body>
@@ -564,6 +617,61 @@
     <footer>
         <p>&copy; 2026 Mohammed Moaz. All rights reserved.</p>
     </footer>
+    <script>
+    /* ===== Name Animation: Decrypt + Glitch (added) ===== */
+    (function () {
+        var el = document.querySelector('.hero h1');
+        if (!el) return;
 
+        var finalText = el.textContent.trim();
+        var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%&@!<>/';
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var running = false;
+
+        el.classList.add('glitch');
+        el.setAttribute('data-text', finalText);
+
+        function glitchBurst() {
+            if (reduce || running) return;
+            el.classList.add('is-glitching');
+            setTimeout(function () { el.classList.remove('is-glitching'); }, 350);
+        }
+
+        function decrypt() {
+            if (running || reduce) return;
+            running = true;
+            el.style.minWidth = el.offsetWidth + 'px';
+            var frame = 0;
+
+            function tick() {
+                var out = '', done = 0;
+                for (var i = 0; i < finalText.length; i++) {
+                    var c = finalText[i];
+                    if (c === ' ') { out += ' '; done++; }
+                    else if (frame > i * 4 + 12) { out += c; done++; }
+                    else out += chars[Math.floor(Math.random() * chars.length)];
+                }
+                el.textContent = out;
+                el.setAttribute('data-text', out);
+
+                if (done < finalText.length) {
+                    frame++;
+                    requestAnimationFrame(tick);
+                } else {
+                    el.textContent = finalText;
+                    el.setAttribute('data-text', finalText);
+                    el.style.minWidth = '';
+                    running = false;
+                    glitchBurst();
+                }
+            }
+            tick();
+        }
+
+        decrypt();
+        el.addEventListener('mouseenter', decrypt);
+        setInterval(glitchBurst, 5000);
+    })();
+    </script>
 </body>
 </html>
