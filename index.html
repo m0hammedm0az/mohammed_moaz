@@ -435,36 +435,28 @@
             .hero h1.glitch::before,
             .hero h1.glitch::after { display: none; }
         }
-                /* Header right side: TryHackMe icon + Contact */
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
+               .thm-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-right: 14px;
+  border: 1px solid #00ffc8;
+  border-radius: 50%;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
 
-        .thm-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            border: 1px solid var(--card-border);
-            background: rgba(15, 23, 42, 0.6);
-            transition: all 0.3s ease;
-        }
+.thm-link img {
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+}
 
-        .thm-link:hover {
-            border-color: var(--accent);
-            box-shadow: 0 0 15px var(--accent-glow);
-            transform: translateY(-2px);
-        }
-
-        .thm-icon {
-            width: 26px;
-            height: 26px;
-            object-fit: contain;
-        }
+.thm-link:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 12px rgba(0, 255, 200, 0.6);
+}
     </style>
 </head>
 <body>
